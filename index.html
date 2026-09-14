@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f3efe4" />
+  <title>Nature Power Card</title>
+  <style>
+    :root {
+      --paper: #f3efe4;
+      --paper-deep: #e7e0d0;
+      --ink: #20302b;
+      --muted: #66716b;
+      --line: rgba(32, 48, 43, 0.15);
+      --forest: #23483d;
+      --forest-dark: #17332c;
+      --moss: #759077;
+      --sun: #d97745;
+      --sun-dark: #aa4f2f;
+      --white: #fffdf8;
+      --shadow: 0 16px 35px rgba(44, 54, 47, 0.11), 0 2px 4px rgba(44, 54, 47, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { min-height: 100%; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        linear-gradient(rgba(35, 72, 61, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(35, 72, 61, 0.025) 1px, transparent 1px),
+        var(--paper);
+      background-size: 24px 24px;
+      font-family: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button { font: inherit; }
+
+    .shell {
+      width: min(1160px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 44px 0 64px;
+    }
+
+    .masthead {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      padding-bottom: 26px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .kicker {
+      margin: 0 0 11px;
+      color: var(--sun-dark);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, p { margin-top: 0; }
+
+    h1 {
+      margin-bottom: 10px;
+      color: var(--forest-dark);
+      font-family: Georgia, "Songti SC", "STSong", serif;
+      font-size: clamp(2rem, 4vw, 3.45rem);
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      line-height: 1.05;
+    }
+
+    .subtitle {
+      max-width: 560px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.7;
+    }
+
+    .mark {
+      display: grid;
+      flex: 0 0 auto;
+      width: 68px;
+      height: 68px;
+      place-items: center;
+      border: 1px solid rgba(35, 72, 61, 0.33);
+      border-radius: 50%;
+      color: var(--forest);
+      font-family: Georgia, serif;
+      font-size: 1.4rem;
+      letter-spacing: -0.08em;
+      transform: rotate(-8deg);
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 28px 0 20px;
+    }
+
+    .section-label {
+      margin: 0;
+      color: var(--forest-dark);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .counter {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .counter strong {
+      color: var(--sun-dark);
+      font-family: Georgia, serif;
+      font-size: 1.35rem;
+      font-weight: 500;
+    }
+
+    .deck {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      max-width: 1040px;
+      margin: 0 auto;
+      justify-content: center;
+      gap: clamp(10px, 1.4vw, 16px);
+      perspective: 1200px;
+    }
+
+    .card {
+      position: relative;
+      aspect-ratio: 0.73;
+      min-height: 180px;
+      padding: 0;
+      border: 0;
+      border-radius: 7px;
+      color: var(--white);
+      background: transparent;
+      cursor: pointer;
+      transition: transform 180ms ease, filter 180ms ease;
+    }
+
+    .card:hover { transform: translateY(-4px); filter: saturate(1.08); }
+
+    .card:focus-visible {
+      outline: 3px solid rgba(217, 119, 69, 0.62);
+      outline-offset: 4px;
+    }
+
+    .card.is-selected { transform: translateY(-7px); }
+
+    .card-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      padding: clamp(15px, 2vw, 22px);
+      border: 1px solid rgba(255, 253, 248, 0.22);
+      border-radius: 7px;
+      background:
+        radial-gradient(circle at 20% 18%, rgba(255,255,255,0.15) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 72% 78%, rgba(255,255,255,0.09) 0 1px, transparent 1.5px),
+        var(--forest);
+      background-size: 19px 19px, 27px 27px, auto;
+      box-shadow: var(--shadow);
+      transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+    }
+
+    .card-inner::before,
+    .card-inner::after {
+      position: absolute;
+      content: "";
+      pointer-events: none;
+    }
+
+    .card-inner::before {
+      inset: 9px;
+      border: 1px solid rgba(255, 253, 248, 0.24);
+      border-radius: 4px;
+    }
+
+    .card-inner::after {
+      right: -25%;
+      bottom: 12%;
+      width: 75%;
+      height: 1px;
+      background: rgba(255, 253, 248, 0.24);
+      box-shadow: 0 12px 0 rgba(255, 253, 248, 0.17), 0 -12px 0 rgba(255, 253, 248, 0.17);
+      transform: rotate(-38deg);
+    }
+
+    .card.is-selected .card-inner {
+      border-color: #f0a178;
+      box-shadow: 0 0 0 3px rgba(217, 119, 69, 0.72), 0 16px 35px rgba(44, 54, 47, 0.16);
+      background-color: #2e5b4d;
+    }
+
+    .card-number {
+      position: relative;
+      z-index: 1;
+      color: rgba(255, 253, 248, 0.7);
+      font-family: Georgia, serif;
+      font-size: 0.84rem;
+      letter-spacing: 0.13em;
+    }
+
+    .back-symbol {
+      position: relative;
+      z-index: 1;
+      align-self: center;
+      color: rgba(255, 253, 248, 0.93);
+      font-family: Georgia, serif;
+      font-size: clamp(2.8rem, 7vw, 5.2rem);
+      font-weight: 400;
+      line-height: 1;
+      transform: rotate(-8deg);
+    }
+
+    .back-caption {
+      position: relative;
+      z-index: 1;
+      align-self: flex-end;
+      color: rgba(255, 253, 248, 0.68);
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.19em;
+      text-transform: uppercase;
+    }
+
+    .selection-dot {
+      position: absolute;
+      z-index: 2;
+      top: 17px;
+      right: 17px;
+      display: grid;
+      width: 21px;
+      height: 21px;
+      place-items: center;
+      border: 1px solid rgba(255, 253, 248, 0.65);
+      border-radius: 50%;
+      color: transparent;
+      font-size: 0.77rem;
+      font-weight: 800;
+    }
+
+    .card.is-selected .selection-dot {
+      border-color: #f0a178;
+      color: #fff9ef;
+      background: var(--sun);
+    }
+
+    .action-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+    }
+
+    .microcopy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 45px;
+      padding: 0 18px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+    }
+
+    .button:focus-visible {
+      outline: 3px solid rgba(217, 119, 69, 0.46);
+      outline-offset: 3px;
+    }
+
+    .button-primary {
+      color: #fff9ef;
+      background: var(--sun);
+      box-shadow: 0 7px 14px rgba(170, 79, 47, 0.16);
+    }
+
+    .button-primary:hover:not(:disabled) { background: var(--sun-dark); transform: translateY(-1px); }
+    .button-primary:disabled { opacity: 0.42; cursor: not-allowed; box-shadow: none; }
+
+    .button-quiet {
+      color: var(--forest);
+      border-color: rgba(35, 72, 61, 0.25);
+      background: transparent;
+    }
+
+    .button-quiet:hover { border-color: var(--forest); background: rgba(35, 72, 61, 0.06); }
+
+    .results[hidden] { display: none; }
+
+    .results {
+      animation: rise 420ms ease both;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(13px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin: 32px 0 20px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .result-heading h2 {
+      margin-bottom: 0;
+      color: var(--forest-dark);
+      font-family: Georgia, "Songti SC", "STSong", serif;
+      font-size: clamp(1.75rem, 3vw, 2.45rem);
+      font-weight: 500;
+    }
+
+    .draw-meta {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.5;
+      text-align: right;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .result-card {
+      position: relative;
+      display: flex;
+      min-height: 390px;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 21px;
+      border: 1px solid rgba(35, 72, 61, 0.4);
+      border-radius: 7px;
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+
+    .result-card::before {
+      position: absolute;
+      inset: 8px;
+      border: 1px solid rgba(35, 72, 61, 0.16);
+      border-radius: 4px;
+      content: "";
+      pointer-events: none;
+    }
+
+    .result-head {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+    }
+
+    .result-index {
+      color: var(--sun-dark);
+      font-family: Georgia, serif;
+      font-size: 0.92rem;
+      letter-spacing: 0.12em;
+    }
+
+    .result-label {
+      font-size: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .result-emblem {
+      position: relative;
+      z-index: 1;
+      margin: 25px 0 15px;
+      color: var(--forest);
+      font-family: Georgia, serif;
+      font-size: 2.4rem;
+      line-height: 1;
+      text-align: center;
+      transform: rotate(-8deg);
+    }
+
+    .result-name {
+      position: relative;
+      z-index: 1;
+      margin: 0 0 6px;
+      color: var(--forest-dark);
+      font-family: Georgia, "Songti SC", "STSong", serif;
+      font-size: 1.45rem;
+      font-weight: 500;
+      line-height: 1.15;
+    }
+
+    .result-name span {
+      margin-left: 7px;
+      color: var(--muted);
+      font-family: "Avenir Next", "PingFang SC", sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .keywords {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 0 0 13px;
+    }
+
+    .keyword {
+      padding: 4px 8px;
+      border-radius: 999px;
+      color: var(--forest);
+      background: rgba(117, 144, 119, 0.15);
+      font-size: 0.71rem;
+      line-height: 1.2;
+    }
+
+    .core {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      color: var(--ink);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .core strong { color: var(--sun-dark); }
+
+    .distinction {
+      position: relative;
+      z-index: 1;
+      margin: 11px 0 0;
+      padding-top: 11px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.65;
+    }
+
+    .result-actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 26px;
+    }
+
+    .status-live {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 760px) {
+      .shell { width: min(100% - 28px, 580px); padding-top: 28px; }
+      .masthead { padding-bottom: 21px; }
+      .mark { width: 54px; height: 54px; font-size: 1.08rem; }
+      .subtitle { font-size: 0.9rem; }
+      .deck { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+      .card { min-height: 135px; }
+      .card-inner { padding: 12px; }
+      .card-inner::before { inset: 6px; }
+      .selection-dot { top: 11px; right: 11px; width: 18px; height: 18px; font-size: 0.68rem; }
+      .card-number { font-size: 0.7rem; }
+      .back-caption { font-size: 0.5rem; }
+      .action-row { align-items: stretch; flex-direction: column; }
+      .button-primary { width: 100%; }
+      .result-heading { align-items: flex-start; flex-direction: column; }
+      .draw-meta { text-align: left; }
+      .result-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .result-card { min-height: 380px; padding: 16px; }
+      .result-name { font-size: 1.22rem; }
+      .result-emblem { margin: 20px 0 12px; font-size: 2rem; }
+    }
+
+    @media (max-width: 460px) {
+      .result-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <div>
+        <p class="kicker">Nature Power Card · Test Draw</p>
+        <h1>自然之力，正在牌面之外。</h1>
+        <p class="subtitle">从 16 张盖上的牌中选出此刻想要的几张。</p>
+      </div>
+      <div class="mark" aria-hidden="true">N/P</div>
+    </header>
+
+    <section id="selection-view" aria-labelledby="selection-title">
+      <div class="toolbar">
+        <h2 class="section-label" id="selection-title">选择牌面</h2>
+        <p class="counter" aria-live="polite"><strong id="selected-count">0</strong><span>/ 16 已选</span></p>
+      </div>
+
+      <div class="deck" id="deck" role="group" aria-label="16 张盖上的牌"></div>
+
+      <div class="action-row">
+        <p class="microcopy" id="selection-state">等待选择</p>
+        <button class="button button-primary" id="draw-button" type="button" disabled>
+          <span aria-hidden="true">↗</span> 完成抽取
+        </button>
+      </div>
+    </section>
+
+    <section class="results" id="results-view" aria-labelledby="results-title" hidden>
+      <div class="result-heading">
+        <h2 id="results-title">你的牌面</h2>
+        <p class="draw-meta" id="draw-meta"></p>
+      </div>
+      <div class="result-grid" id="result-grid"></div>
+      <div class="result-actions">
+        <button class="button button-quiet" id="restart-button" type="button"><span aria-hidden="true">↺</span> 重新选择</button>
+      </div>
+    </section>
+
+    <p class="status-live" id="status-live" aria-live="polite"></p>
+  </main>
+
+  <script>
+    const cards = [
+      {
+        number: "01", en: "Wild", zh: "野",
+        keywords: ["空荡", "原始", "开放", "未被驯化"],
+        core: "没有被建立、命名或连接起来的状态。",
+        distinction: "它指向尚未形成的开放起点，而不是已经发生的变化。"
+      },
+      {
+        number: "02", en: "Thunder", zh: "雷",
+        keywords: ["突变", "破碎", "外部变化", "无法忽视"],
+        core: "来自外部的巨大冲击，使原有状态突然改变。",
+        distinction: "外部、突然、无法忽视的冲击；与 Volcano 的内部爆发相对。"
+      },
+      {
+        number: "03", en: "Fire", zh: "火",
+        keywords: ["开始", "灵感", "点燃", "行动起点"],
+        core: "某件事情第一次被点燃，并开始产生自己的动力。",
+        distinction: "它是从无到有的自发启动，强调第一股行动力。"
+      },
+      {
+        number: "04", en: "Forest", zh: "森林",
+        keywords: ["丰富", "成套", "群体", "协作系统"],
+        core: "多个部分形成一个能够自我维持的完整系统。",
+        distinction: "小力量不易摧毁，巨大力量可以变革；重点是系统性与协作。"
+      },
+      {
+        number: "05", en: "Glacier", zh: "冰山",
+        keywords: ["潜伏", "条件触发", "暗流", "尚未显现"],
+        core: "变化已经存在，只是还没有到显现的时候。",
+        distinction: "Glacier 是变化静止地潜伏；Blue Hour 是正在发生的转换，Volcano 是已到临界。"
+      },
+      {
+        number: "06", en: "River Fork", zh: "河流支流",
+        keywords: ["分离", "细化", "选择方向", "分而治之"],
+        core: "原本共同的东西开始沿不同方向流动。",
+        distinction: "共同能量分开，形成不同路径；可以对应关系、计划或资源的分流。"
+      },
+      {
+        number: "07", en: "Blue Hour", zh: "蓝调时刻",
+        keywords: ["过渡", "临界", "即将结束", "短暂窗口"],
+        core: "旧的已经开始消退，新的还没有完全出现。",
+        distinction: "它是正在发生的转换，不是 Glacier 那样的静止潜伏。"
+      },
+      {
+        number: "08", en: "Volcano", zh: "火山",
+        keywords: ["积累", "膨胀", "压力极限", "爆发"],
+        core: "内部积累超过承载能力，最终必须释放。",
+        distinction: "强调内部压力到临界后的释放；Thunder 是外部冲击，Glacier 是潜伏状态。"
+      },
+      {
+        number: "09", en: "Canyon", zh: "峡谷",
+        keywords: ["侵蚀", "缓慢形成", "历史变迁", "留下痕迹"],
+        core: "时间反复作用，在事物上留下不可逆的痕迹。",
+        distinction: "它是时间积累后的深痕，不是 Volcano 压力积累后的突然释放。"
+      },
+      {
+        number: "10", en: "Cave", zh: "洞穴",
+        keywords: ["隔绝", "隐藏", "封闭", "进入困难"],
+        core: "存在于世界之中，却与外部世界隔绝。",
+        distinction: "Cave 是空间上的隔绝与隐藏；Moon 是内在世界的隐秘；Wind 是无形力量。"
+      },
+      {
+        number: "11", en: "Oasis", zh: "绿洲",
+        keywords: ["稀缺", "希望", "使命", "被需要"],
+        core: "在普遍匮乏的环境中，出现一个稀缺而重要的存在。",
+        distinction: "它因为环境的贫瘠而显得珍贵，也可能带有孤独与使命感。"
+      },
+      {
+        number: "12", en: "Wind", zh: "风",
+        keywords: ["自由", "无形推动", "流动", "顺势而动"],
+        core: "看不见，却能够改变事物运动方向的力量。",
+        distinction: "持续、无形、容易被忽视的推动；与 Thunder 的巨大突然冲击相对。"
+      },
+      {
+        number: "13", en: "Moon", zh: "月亮",
+        keywords: ["灵魂", "敏感", "情绪", "尚未表达"],
+        core: "发生在内在世界，却尚未完全进入现实世界。",
+        distinction: "Moon 是心理、情绪或精神层面的未表达；Cave 是与外界隔绝；Sun 是公开显现。"
+      },
+      {
+        number: "14", en: "Eclipse", zh: "日月食",
+        keywords: ["罕见", "奇迹", "多重条件", "低概率"],
+        core: "许多条件恰好同时成立，使一个低概率事件发生。",
+        distinction: "它强调偶然、非预期，以及多个因素在同一时刻精准会合。"
+      },
+      {
+        number: "15", en: "Sun", zh: "太阳",
+        keywords: ["公开", "清晰", "成功显现", "无法隐藏"],
+        core: "原本的东西进入光照之下，变得清楚、公开、可见。",
+        distinction: "Sun 与 Moon 直接相对，也与 Cave 的隐藏、隔绝形成对照。"
+      },
+      {
+        number: "16", en: "God Tree", zh: "神树",
+        keywords: ["毁灭", "撕裂", "崩塌", "彻底瓦解"],
+        core: "原有结构彻底失去维持能力，最终成为废墟。",
+        distinction: "它强调坍塌后的最终结果；Volcano 强调压力释放的过程，Thunder 强调外部冲击。"
+      }
+    ];
+
+    const deck = document.querySelector("#deck");
+    const selectedCount = document.querySelector("#selected-count");
+    const selectionState = document.querySelector("#selection-state");
+    const drawButton = document.querySelector("#draw-button");
+    const selectionView = document.querySelector("#selection-view");
+    const resultsView = document.querySelector("#results-view");
+    const resultGrid = document.querySelector("#result-grid");
+    const drawMeta = document.querySelector("#draw-meta");
+    const restartButton = document.querySelector("#restart-button");
+    const statusLive = document.querySelector("#status-live");
+
+    const selected = new Set();
+
+    function renderDeck() {
+      deck.innerHTML = cards.map((card, index) => `
+        <button class="card" type="button" data-index="${index}" aria-pressed="false" aria-label="第 ${card.number} 张盖上的牌">
+          <span class="card-inner">
+            <span class="selection-dot" aria-hidden="true">✓</span>
+            <span class="back-symbol" aria-hidden="true">✳</span>
+            <span class="back-caption">nature / power</span>
+          </span>
+        </button>
+      `).join("");
+
+      deck.addEventListener("click", handleCardClick);
+    }
+
+    function handleCardClick(event) {
+      const button = event.target.closest(".card");
+      if (!button) return;
+      const index = Number(button.dataset.index);
+      if (selected.has(index)) {
+        selected.delete(index);
+      } else {
+        selected.add(index);
+      }
+      button.classList.toggle("is-selected", selected.has(index));
+      button.setAttribute("aria-pressed", String(selected.has(index)));
+      updateSelectionState();
+    }
+
+    function updateSelectionState() {
+      const count = selected.size;
+      selectedCount.textContent = String(count);
+      drawButton.disabled = count === 0;
+      selectionState.textContent = count === 0 ? "等待选择" : `${count} 张牌已就位`;
+      statusLive.textContent = count === 0 ? "没有选中的牌" : `已选 ${count} 张牌`;
+    }
+
+    function shuffle(list) {
+      const shuffled = [...list];
+      for (let i = shuffled.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+
+    function renderResults() {
+      const drawn = shuffle([...selected].map((index) => cards[index]));
+      resultGrid.innerHTML = drawn.map((card, index) => `
+        <article class="result-card">
+          <div class="result-head">
+            <span class="result-index">${String(index + 1).padStart(2, "0")}</span>
+            <span class="result-label">revealed</span>
+          </div>
+          <div class="result-emblem" aria-hidden="true">✳</div>
+          <h3 class="result-name">${card.zh}<span>${card.en}</span></h3>
+          <div class="keywords">${card.keywords.map((keyword) => `<span class="keyword">${keyword}</span>`).join("")}</div>
+          <p class="core"><strong>核心：</strong>${card.core}</p>
+          <p class="distinction">${card.distinction}</p>
+        </article>
+      `).join("");
+
+      drawMeta.textContent = `本次抽取 ${drawn.length} 张 · 顺序由 JavaScript 随机生成`;
+      selectionView.hidden = true;
+      resultsView.hidden = false;
+      resultsView.scrollIntoView({ behavior: "smooth", block: "start" });
+      statusLive.textContent = `抽取完成，共 ${drawn.length} 张牌`;
+    }
+
+    function restart() {
+      selected.clear();
+      document.querySelectorAll(".card").forEach((button) => {
+        button.classList.remove("is-selected");
+        button.setAttribute("aria-pressed", "false");
+      });
+      resultGrid.innerHTML = "";
+      selectionView.hidden = false;
+      resultsView.hidden = true;
+      updateSelectionState();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    drawButton.addEventListener("click", renderResults);
+    restartButton.addEventListener("click", restart);
+    renderDeck();
+    updateSelectionState();
+  </script>
+</body>
+</html>
