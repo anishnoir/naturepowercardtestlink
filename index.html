@@ -503,7 +503,7 @@
       .mark { width: 54px; height: 54px; font-size: 1.08rem; }
       .subtitle { font-size: 0.9rem; }
       .deck { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
-      .card { min-height: 135px; }
+      .card { min-height: 0; }
       .card-inner { padding: 12px; }
       .card-inner::before { inset: 6px; }
       .selection-dot { top: 11px; right: 11px; width: 18px; height: 18px; font-size: 0.68rem; }
@@ -683,7 +683,10 @@
     const selected = new Set();
 
     function renderDeck() {
-      deck.innerHTML = cards.map((card, index) => `
+      const order = shuffle(cards.map((_, index) => index));
+      deck.innerHTML = order.map((index) => {
+        const card = cards[index];
+        return `
         <button class="card" type="button" data-index="${index}" aria-pressed="false" aria-label="第 ${card.number} 张盖上的牌">
           <span class="card-inner">
             <span class="selection-dot" aria-hidden="true">✓</span>
@@ -691,9 +694,8 @@
             <span class="back-caption">nature / power</span>
           </span>
         </button>
-      `).join("");
-
-      deck.addEventListener("click", handleCardClick);
+      `;
+      }).join("");
     }
 
     function handleCardClick(event) {
@@ -752,10 +754,7 @@
 
     function restart() {
       selected.clear();
-      document.querySelectorAll(".card").forEach((button) => {
-        button.classList.remove("is-selected");
-        button.setAttribute("aria-pressed", "false");
-      });
+      renderDeck();
       resultGrid.innerHTML = "";
       selectionView.hidden = false;
       resultsView.hidden = true;
@@ -765,6 +764,7 @@
 
     drawButton.addEventListener("click", renderResults);
     restartButton.addEventListener("click", restart);
+    deck.addEventListener("click", handleCardClick);
     renderDeck();
     updateSelectionState();
   </script>
