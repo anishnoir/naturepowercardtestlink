@@ -479,6 +479,18 @@
       line-height: 1.65;
     }
 
+    .distinction strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--sun-dark);
+    }
+
+    .distinction p {
+      margin: 0 0 6px;
+    }
+
+    .distinction p:last-child { margin-bottom: 0; }
+
     .result-actions {
       display: flex;
       justify-content: center;
@@ -502,7 +514,7 @@
       .masthead { padding-bottom: 21px; }
       .mark { width: 54px; height: 54px; font-size: 1.08rem; }
       .subtitle { font-size: 0.9rem; }
-      .deck { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+      .deck { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
       .card { min-height: 0; }
       .card-inner { padding: 12px; }
       .card-inner::before { inset: 6px; }
@@ -534,7 +546,7 @@
       <div>
         <p class="kicker">Nature Power Card · Test Draw</p>
         <h1>自然之力，正在牌面之外。</h1>
-        <p class="subtitle">从 16 张盖上的牌中选出此刻想要的几张。</p>
+        <p class="subtitle">从 20 张盖上的牌中选出此刻想要的几张。</p>
       </div>
       <div class="mark" aria-hidden="true">N/P</div>
     </header>
@@ -542,10 +554,10 @@
     <section id="selection-view" aria-labelledby="selection-title">
       <div class="toolbar">
         <h2 class="section-label" id="selection-title">选择牌面</h2>
-        <p class="counter" aria-live="polite"><strong id="selected-count">0</strong><span>/ 16 已选</span></p>
+        <p class="counter" aria-live="polite"><strong id="selected-count">0</strong><span>/ 20 已选</span></p>
       </div>
 
-      <div class="deck" id="deck" role="group" aria-label="16 张盖上的牌"></div>
+      <div class="deck" id="deck" role="group" aria-label="20 张盖上的牌"></div>
 
       <div class="action-row">
         <p class="microcopy" id="selection-state">等待选择</p>
@@ -573,99 +585,123 @@
     const cards = [
       {
         number: "01", en: "Wild", zh: "野",
-        keywords: ["空荡", "原始", "开放", "未被驯化"],
+        keywords: ["空荡的", "野的", "原始的", "不可定义的", "遥远的过去", "没有链接的", "开放的", "未被驯化的", "尚未形成的"],
         core: "没有被建立、命名或连接起来的状态。",
-        distinction: "它指向尚未形成的开放起点，而不是已经发生的变化。"
+        distinction: ["vs Forest：Wild 是尚未形成结构；Forest 是多个部分已经形成能够自我维持的系统。", "vs Cave：Wild 是开放但未被建立；Cave 是已经存在，却与外部隔绝。", "vs Oasis：Wild 是环境本身未被驯化；Oasis 是匮乏环境中已经形成的稀缺存在。"]
       },
       {
         number: "02", en: "Thunder", zh: "雷",
-        keywords: ["突变", "破碎", "外部变化", "无法忽视"],
+        keywords: ["巨大的声音", "突变", "刻骨铭心的", "巨变", "破碎", "破坏", "外部变化", "突然发生的", "无法忽视的"],
         core: "来自外部的巨大冲击，使原有状态突然改变。",
-        distinction: "外部、突然、无法忽视的冲击；与 Volcano 的内部爆发相对。"
+        distinction: ["vs Volcano：Thunder 是外部冲击；Volcano 是内部积累后的爆发。", "vs Fire：Thunder 是已有状态被突然改变；Fire 是一个新事件第一次被点燃。", "vs God Tree：Thunder 是造成破坏的巨大冲击；God Tree 是原有结构最终彻底瓦解的结果。"]
       },
       {
         number: "03", en: "Fire", zh: "火",
-        keywords: ["开始", "灵感", "点燃", "行动起点"],
+        keywords: ["一个事件的开始", "灵感", "独立的", "点燃", "行动的起点", "自发的", "产生动力", "从无到有"],
         core: "某件事情第一次被点燃，并开始产生自己的动力。",
-        distinction: "它是从无到有的自发启动，强调第一股行动力。"
+        distinction: ["vs Thunder：Fire 是从无到有的启动；Thunder 是外部冲击造成的突变。", "vs Volcano：Fire 是刚刚产生动力；Volcano 是内部动力长期积累后达到临界。", "vs Blue Hour：Fire 是开始；Blue Hour 是旧状态结束、新状态开始之间的过渡。"]
       },
       {
         number: "04", en: "Forest", zh: "森林",
-        keywords: ["丰富", "成套", "群体", "协作系统"],
+        keywords: ["丰富的", "中等时间固定的系统", "成套的", "群体的", "分工协作的", "内部轮替的", "完整体系的", "不容易被细小力量摧毁", "容易被巨大力量变革"],
         core: "多个部分形成一个能够自我维持的完整系统。",
-        distinction: "小力量不易摧毁，巨大力量可以变革；重点是系统性与协作。"
+        distinction: ["vs Wild：Wild 是尚未形成结构；Forest 是结构已经形成。", "vs Root：Forest 是已经运行的整体系统；Root 是支撑系统存在的底层基础。", "vs God Tree：Forest 是结构能够维持自身；God Tree 是结构已经失去维持能力并彻底崩塌。"]
       },
       {
         number: "05", en: "Glacier", zh: "冰山",
-        keywords: ["潜伏", "条件触发", "暗流", "尚未显现"],
+        keywords: ["表面平静但早晚会出现问题", "短暂的平静", "需要条件触发", "暗流涌动", "短时间内不可逆", "潜伏的", "尚未显现的变化"],
         core: "变化已经存在，只是还没有到显现的时候。",
-        distinction: "Glacier 是变化静止地潜伏；Blue Hour 是正在发生的转换，Volcano 是已到临界。"
+        distinction: ["vs Volcano：Glacier 是变化处于潜伏状态；Volcano 是内部积累已经达到临界。", "vs Blue Hour：Glacier 是变化尚未显现；Blue Hour 是变化已经开始发生。", "vs Moon：Glacier 是客观状态中的潜伏变化；Moon 是内在世界尚未表达的内容。"]
       },
       {
         number: "06", en: "River Fork", zh: "河流支流",
-        keywords: ["分离", "细化", "选择方向", "分而治之"],
+        keywords: ["一分为二的", "能量分开的", "分离的", "细化的", "分手", "分而治之", "选择不同方向的", "路径分叉的"],
         core: "原本共同的东西开始沿不同方向流动。",
-        distinction: "共同能量分开，形成不同路径；可以对应关系、计划或资源的分流。"
+        distinction: ["vs Whirlpool：River Fork 是一个整体分成不同方向；Whirlpool 是轨迹被力量改变并向中心卷入。", "vs Swamp：River Fork 是继续运动但方向发生改变；Swamp 是运动本身受到阻滞。", "vs Blue Hour：River Fork 强调方向分化；Blue Hour 强调旧状态向新状态转换。"]
       },
       {
-        number: "07", en: "Blue Hour", zh: "蓝调时刻",
-        keywords: ["过渡", "临界", "即将结束", "短暂窗口"],
+        number: "07", en: "Swamp", zh: "沼泽",
+        keywords: ["陷入的", "滞留的", "难以脱身的", "越挣扎越深的", "消耗性的", "黏滞的", "前进困难的", "边界模糊的", "看似可以通过但实际上无法通过的", "长时间停留的", "可以避开的危险", "需要判断与绕行的"],
+        core: "不是没有路，而是每一步都很难真正离开原来的位置。",
+        distinction: ["vs Cave：Cave 是空间上的封闭与隔绝；Swamp 是行动上的陷入与滞留。", "vs Whirlpool：Swamp 是走进去以后很难出来；Whirlpool 是有力量持续把你往里面拉。", "vs Glacier：Glacier 是表面平静、内部潜伏；Swamp 是已经被环境拖住并持续消耗。", "vs Volcano：Swamp 的危险可以判断、绕行和避开；Volcano 达到临界后无法规避。", "vs Blue Hour：Swamp 是被困在原状态；Blue Hour 是原状态正在自然结束。"]
+      },
+      {
+        number: "08", en: "Tide", zh: "潮汐",
+        keywords: ["反复的", "周期性的", "涨落的", "潮起潮落", "不断回来的", "看似重复的", "始终变化的", "无法停止的变化", "规律中的变化", "表面不变但实际上一直在变化"],
+        core: "看似不断回到原来的位置，但实际上从未真正停止变化。",
+        distinction: ["vs Swamp：Swamp 是真正的停滞；Tide 是看似重复，但变化始终存在。", "vs Whirlpool：Tide 是规律性的涨落与回返；Whirlpool 是持续旋转并产生卷入。", "vs Blue Hour：Tide 是周期性、反复的变化；Blue Hour 是短暂、单向的过渡。", "vs Canyon：Tide 是变化不断循环；Canyon 是变化不断累积并留下不可逆的痕迹。"]
+      },
+      {
+        number: "09", en: "Whirlpool", zh: "漩涡",
+        keywords: ["被吸引的", "被卷入的", "向中心靠近的", "失去原有轨迹的", "越陷越深的", "无法脱身的", "自我强化的", "反复卷动的", "失去控制的", "向内收缩的"],
+        core: "受到持续的吸引与旋转作用，逐渐偏离原本的轨迹，并越来越难以脱离。",
+        distinction: ["vs Swamp：Swamp 是进入之后难以脱身；Whirlpool 是持续有力量把你往里面拉。", "vs River Fork：River Fork 是分向不同方向；Whirlpool 是轨迹被改变并被卷向中心。", "vs Tide：Tide 是周期性的涨落与回返；Whirlpool 是持续旋转并不断产生卷入。", "vs Volcano：Volcano 是内部压力达到临界后释放；Whirlpool 是外部或环境力量持续造成卷入。"]
+      },
+      {
+        number: "10", en: "Blue Hour", zh: "蓝调时刻",
+        keywords: ["即将结束", "也是即将开始", "时间不长的过渡", "临界状态", "尚未完成转换", "短暂的窗口", "新旧交替"],
         core: "旧的已经开始消退，新的还没有完全出现。",
-        distinction: "它是正在发生的转换，不是 Glacier 那样的静止潜伏。"
+        distinction: ["vs Glacier：Glacier 是变化尚未显现；Blue Hour 是变化已经开始发生。", "vs Tide：Tide 是周期性变化；Blue Hour 是一次性的状态转换。", "vs Swamp：Swamp 是被困住；Blue Hour 是自然进入下一个状态。", "vs Fire：Fire 是新事物开始；Blue Hour 是旧与新之间的过渡。"]
       },
       {
-        number: "08", en: "Volcano", zh: "火山",
-        keywords: ["积累", "膨胀", "压力极限", "爆发"],
+        number: "11", en: "Volcano", zh: "火山",
+        keywords: ["逐渐渗透的问题终将爆发", "膨胀", "变大", "压力到极限", "内部变化", "积累", "压抑", "无法继续容纳", "不可避免的爆发", "无法规避的危险"],
         core: "内部积累超过承载能力，最终必须释放。",
-        distinction: "强调内部压力到临界后的释放；Thunder 是外部冲击，Glacier 是潜伏状态。"
+        distinction: ["vs Thunder：Thunder 是外部冲击；Volcano 是内部积累后的爆发。", "vs Glacier：Glacier 是潜伏；Volcano 是临界。", "vs Canyon：Volcano 是压力积累后突然释放；Canyon 是时间积累后逐渐留下痕迹。", "vs Swamp：Swamp 的危险可以绕行；Volcano 达到临界后爆发不可避免。", "vs God Tree：Volcano 强调释放过程；God Tree 强调彻底瓦解后的结果。"]
       },
       {
-        number: "09", en: "Canyon", zh: "峡谷",
-        keywords: ["侵蚀", "缓慢形成", "历史变迁", "留下痕迹"],
+        number: "12", en: "Canyon", zh: "峡谷",
+        keywords: ["反复侵蚀的", "缓慢形成的", "慢慢切割的", "历史变迁的", "长期积累的", "留下痕迹的", "越来越深的", "时间造成的"],
         core: "时间反复作用，在事物上留下不可逆的痕迹。",
-        distinction: "它是时间积累后的深痕，不是 Volcano 压力积累后的突然释放。"
+        distinction: ["vs Volcano：Volcano 是压力积累后突然释放；Canyon 是时间积累后逐渐留下痕迹。", "vs Tide：Tide 是周期性变化；Canyon 是长期累积。", "vs Thunder：Thunder 是瞬间冲击；Canyon 是长期作用。", "vs Forest：Forest 是系统逐渐形成；Canyon 是时间逐渐改变原有事物。"]
       },
       {
-        number: "10", en: "Cave", zh: "洞穴",
-        keywords: ["隔绝", "隐藏", "封闭", "进入困难"],
+        number: "13", en: "Cave", zh: "洞穴",
+        keywords: ["与世隔绝的", "未被发现的", "外部不可见的", "隐藏的", "封闭的", "远离外部的", "不被接触的", "进入困难的"],
         core: "存在于世界之中，却与外部世界隔绝。",
-        distinction: "Cave 是空间上的隔绝与隐藏；Moon 是内在世界的隐秘；Wind 是无形力量。"
+        distinction: ["vs Moon：Cave 是空间上的隔绝；Moon 是内在世界的隐秘。", "vs Wind：Cave 是对象被隐藏所以不可见；Wind 是力量本身没有形体。", "vs Swamp：Cave 是空间封闭；Swamp 是行动受阻。", "vs Shadow：Cave 是真实存在的东西被隐藏；Shadow 是真实对象产生的投射。", "vs Wild：Wild 是开放而未被建立；Cave 是存在但被隔绝。"]
       },
       {
-        number: "11", en: "Oasis", zh: "绿洲",
-        keywords: ["稀缺", "希望", "使命", "被需要"],
+        number: "14", en: "Oasis", zh: "绿洲",
+        keywords: ["少见的", "稀缺的", "重要的", "赋予希望的", "有使命意义的", "孤独的", "与环境格格不入的", "特立独行的", "被需要的", "在贫瘠环境中存在的"],
         core: "在普遍匮乏的环境中，出现一个稀缺而重要的存在。",
-        distinction: "它因为环境的贫瘠而显得珍贵，也可能带有孤独与使命感。"
+        distinction: ["vs Drought：Oasis 是匮乏环境中的稀缺存在；Drought 是匮乏本身不断扩大。", "vs Wild：Wild 强调未被建立；Oasis 强调已经存在且具有特殊价值。", "vs Eclipse：Oasis 的特殊性来自环境中的稀缺；Eclipse 的特殊性来自低概率条件同时成立。", "vs Sun：Oasis 是在匮乏中被发现的希望；Sun 是事物本身完全显现。"]
       },
       {
-        number: "12", en: "Wind", zh: "风",
-        keywords: ["自由", "无形推动", "流动", "顺势而动"],
+        number: "15", en: "Wind", zh: "风",
+        keywords: ["自由的", "无形的推动力", "容易被忽视的变化前兆", "流动的", "不受控制的", "无形的", "影响环境的", "顺势而动的"],
         core: "看不见，却能够改变事物运动方向的力量。",
-        distinction: "持续、无形、容易被忽视的推动；与 Thunder 的巨大突然冲击相对。"
+        distinction: ["vs Thunder：Wind 是持续、无形、容易被忽视的推动；Thunder 是突然、巨大、无法忽视的冲击。", "vs Cave：Wind 是力量不可见；Cave 是对象被隐藏。", "vs Shadow：Wind 是真实存在但没有实体的力量；Shadow 是真实对象产生的投射。", "vs Whirlpool：Wind 是推动与流动；Whirlpool 是吸引、旋转与卷入。"]
       },
       {
-        number: "13", en: "Moon", zh: "月亮",
-        keywords: ["灵魂", "敏感", "情绪", "尚未表达"],
+        number: "16", en: "Moon", zh: "月亮",
+        keywords: ["灵魂层面的", "敏感的", "情绪化的", "阴暗的", "不被人所知的", "在孕育过程中的", "内在的", "私密的", "尚未表达的"],
         core: "发生在内在世界，却尚未完全进入现实世界。",
-        distinction: "Moon 是心理、情绪或精神层面的未表达；Cave 是与外界隔绝；Sun 是公开显现。"
+        distinction: ["vs Cave：Cave 是与外界隔绝；Moon 是内在而未向外显现。", "vs Glacier：Glacier 是客观变化已经发生但尚未爆发；Moon 是心理、情绪或精神层面的东西尚未表达。", "vs Sun：Moon 是内在、私密、未显现；Sun 是外在、公开、已显现。", "vs Shadow：Moon 是内在世界真实存在的内容；Shadow 是外部真实对象产生的表象。"]
       },
       {
-        number: "14", en: "Eclipse", zh: "日月食",
-        keywords: ["罕见", "奇迹", "多重条件", "低概率"],
+        number: "17", en: "Eclipse", zh: "日月食",
+        keywords: ["罕见的", "奇迹的", "由多重因素齐备", "偶然发生的", "非预期的", "低概率的", "恰好发生的", "条件同时成立的"],
         core: "许多条件恰好同时成立，使一个低概率事件发生。",
-        distinction: "它强调偶然、非预期，以及多个因素在同一时刻精准会合。"
+        distinction: ["vs Tide：Tide 是稳定存在的周期规律；Eclipse 是罕见的特殊事件。", "vs Shadow：Shadow 是一个对象与前置条件形成投射；Eclipse 是多个条件偶然同时成立。", "vs Oasis：Oasis 是环境中的稀缺存在；Eclipse 是事件发生概率的稀缺。", "vs Thunder：Thunder 强调突然发生；Eclipse 强调低概率条件的同时成立。"]
       },
       {
-        number: "15", en: "Sun", zh: "太阳",
-        keywords: ["公开", "清晰", "成功显现", "无法隐藏"],
+        number: "18", en: "Shadow", zh: "影",
+        keywords: ["看得到但不可触碰的", "虚幻的", "因为有前置因素产生的投射", "被投射的", "依附于真实对象的", "间接显现的", "没有实体的", "似真而非真的"],
+        core: "真实存在经过某种前置条件后产生的投射，看得见，却无法直接触碰。",
+        distinction: ["vs Cave：Cave 是真实存在的东西被隐藏；Shadow 是真实存在的东西产生投射。", "vs Wind：Wind 是力量本身没有实体；Shadow 是由其他真实对象产生的影像。", "vs Moon：Moon 是内在世界真实存在但尚未表达；Shadow 是外部真实对象产生的表象。", "vs Sun：Sun 是事物本身直接显现；Shadow 是事物经过条件作用后的间接显现。", "vs Eclipse：Eclipse 是多个条件偶然同时成立；Shadow 是对象与前置条件形成稳定的投射关系。"]
+      },
+      {
+        number: "19", en: "Sun", zh: "太阳",
+        keywords: ["公开的", "正气", "显露问题的", "梦想成真的", "被人知道的", "著名的", "清晰的", "成功显现的", "无法隐藏的"],
         core: "原本的东西进入光照之下，变得清楚、公开、可见。",
-        distinction: "Sun 与 Moon 直接相对，也与 Cave 的隐藏、隔绝形成对照。"
+        distinction: ["vs Moon：Moon 是内在、私密、未显现；Sun 是外在、公开、已显现。", "vs Cave：Cave 是隐藏、隔绝、不可见；Sun 是暴露、连接、被看见。", "vs Shadow：Shadow 是依赖前置条件产生的间接显现；Sun 是事物本身直接进入光照之下。", "vs Eclipse：Sun 是持续而清晰的显现；Eclipse 是光被罕见条件暂时遮蔽的特殊事件。"]
       },
       {
-        number: "16", en: "God Tree", zh: "神树",
-        keywords: ["毁灭", "撕裂", "崩塌", "彻底瓦解"],
+        number: "20", en: "God Tree", zh: "神树",
+        keywords: ["毁灭的", "痛苦的", "撕裂的", "崩塌的", "成为废墟的", "彻底瓦解的", "失去原有结构的", "不可挽回的"],
         core: "原有结构彻底失去维持能力，最终成为废墟。",
-        distinction: "它强调坍塌后的最终结果；Volcano 强调压力释放的过程，Thunder 强调外部冲击。"
+        distinction: ["vs Thunder：Thunder 是一次外部冲击造成的突然破坏；God Tree 是原有结构彻底瓦解。", "vs Volcano：Volcano 强调内部压力释放的过程；God Tree 强调最终坍塌后的结果。", "vs Canyon：Canyon 是长期作用留下痕迹；God Tree 是结构最终失去完整性。", "vs Forest：Forest 是完整系统；God Tree 是系统彻底崩解后的状态。"]
       }
     ];
 
@@ -741,7 +777,7 @@
           <h3 class="result-name">${card.zh}<span>${card.en}</span></h3>
           <div class="keywords">${card.keywords.map((keyword) => `<span class="keyword">${keyword}</span>`).join("")}</div>
           <p class="core"><strong>核心：</strong>${card.core}</p>
-          <p class="distinction">${card.distinction}</p>
+          <div class="distinction"><strong>区分：</strong>${card.distinction.map((item) => `<p>${item}</p>`).join("")}</div>
         </article>
       `).join("");
 
