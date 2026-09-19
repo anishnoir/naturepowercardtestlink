@@ -175,20 +175,17 @@
       flex-direction: column;
       justify-content: space-between;
       overflow: hidden;
-      padding: clamp(15px, 2vw, 22px);
-      border: 1px solid rgba(255, 253, 248, 0.22);
+      padding: 0;
+      border: 0;
       border-radius: 7px;
-      background:
-        radial-gradient(circle at 20% 18%, rgba(255,255,255,0.15) 0 1px, transparent 1.5px),
-        radial-gradient(circle at 72% 78%, rgba(255,255,255,0.09) 0 1px, transparent 1.5px),
-        var(--forest);
-      background-size: 19px 19px, 27px 27px, auto;
+      background: transparent;
       box-shadow: var(--shadow);
       transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
     }
 
     .card-inner::before,
     .card-inner::after {
+      display: none;
       position: absolute;
       content: "";
       pointer-events: none;
@@ -213,7 +210,13 @@
     .card.is-selected .card-inner {
       border-color: #f0a178;
       box-shadow: 0 0 0 3px rgba(217, 119, 69, 0.72), 0 16px 35px rgba(44, 54, 47, 0.16);
-      background-color: #2e5b4d;
+    }
+
+    .back-art {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
 
     .card-number {
@@ -262,9 +265,11 @@
       color: transparent;
       font-size: 0.77rem;
       font-weight: 800;
+      visibility: hidden;
     }
 
     .card.is-selected .selection-dot {
+      visibility: visible;
       border-color: #f0a178;
       color: #fff9ef;
       background: var(--sun);
@@ -518,7 +523,7 @@
       .subtitle { font-size: 0.9rem; }
       .deck { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
       .card { min-height: 0; }
-      .card-inner { padding: 12px; }
+      .card-inner { padding: 0; }
       .card-inner::before { inset: 6px; }
       .selection-dot { top: 11px; right: 11px; width: 18px; height: 18px; font-size: 0.68rem; }
       .card-number { font-size: 0.7rem; }
@@ -527,14 +532,14 @@
       .button-primary { width: 100%; }
       .result-heading { align-items: flex-start; flex-direction: column; }
       .draw-meta { text-align: left; }
-      .result-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-      .result-card { padding: 16px; }
+      .result-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+      .result-card { min-width: 0; padding: 6px; }
+      .result-card::before { inset: 3px; }
+      .result-head { padding: 3px; }
+      .result-index { font-size: 0.7rem; }
+      .result-label { display: none; }
       .result-name { font-size: 1.22rem; }
-      .result-art { margin: 12px 0; }
-    }
-
-    @media (max-width: 460px) {
-      .result-grid { grid-template-columns: 1fr; }
+      .result-art { margin: 4px 0 0; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -728,8 +733,7 @@
         <button class="card" type="button" data-index="${index}" aria-pressed="false" aria-label="第 ${card.number} 张盖上的牌">
           <span class="card-inner">
             <span class="selection-dot" aria-hidden="true">✓</span>
-            <span class="back-symbol" aria-hidden="true">✳</span>
-            <span class="back-caption">nature / power</span>
+            <img class="back-art" src="assets/cards/back.svg" alt="" width="200" height="300" decoding="async" aria-hidden="true">
           </span>
         </button>
       `;
