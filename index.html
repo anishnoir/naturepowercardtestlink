@@ -148,8 +148,8 @@
 
     .card {
       position: relative;
-      aspect-ratio: 0.73;
-      min-height: 180px;
+      aspect-ratio: 2 / 3;
+      min-height: 0;
       padding: 0;
       border: 0;
       border-radius: 7px;
@@ -370,7 +370,6 @@
     .result-card {
       position: relative;
       display: flex;
-      min-height: 390px;
       flex-direction: column;
       overflow: hidden;
       padding: 21px;
@@ -412,16 +411,15 @@
       text-transform: uppercase;
     }
 
-    .result-emblem {
+    .result-art {
       position: relative;
       z-index: 1;
-      margin: 25px 0 15px;
-      color: var(--forest);
-      font-family: Georgia, serif;
-      font-size: 2.4rem;
-      line-height: 1;
-      text-align: center;
-      transform: rotate(-8deg);
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 2 / 3;
+      object-fit: contain;
+      margin: 16px 0;
     }
 
     .result-name {
@@ -530,9 +528,9 @@
       .result-heading { align-items: flex-start; flex-direction: column; }
       .draw-meta { text-align: left; }
       .result-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-      .result-card { min-height: 380px; padding: 16px; }
+      .result-card { padding: 16px; }
       .result-name { font-size: 1.22rem; }
-      .result-emblem { margin: 20px 0 12px; font-size: 2rem; }
+      .result-art { margin: 12px 0; }
     }
 
     @media (max-width: 460px) {
@@ -777,11 +775,7 @@
             <span class="result-index">${String(index + 1).padStart(2, "0")}</span>
             <span class="result-label">revealed</span>
           </div>
-          <div class="result-emblem" aria-hidden="true">✳</div>
-          <h3 class="result-name">${card.zh}<span>${card.en}</span></h3>
-          <div class="keywords">${card.keywords.map((keyword) => `<span class="keyword">${keyword}</span>`).join("")}</div>
-          <p class="core"><strong>核心：</strong>${card.core}</p>
-          <div class="distinction"><strong>区分：</strong>${card.distinction.map((item) => `<p>${item}</p>`).join("")}</div>
+          <img class="result-art" src="assets/cards/${Number(card.number)}.svg" alt="${card.number} ${card.zh} ${card.en} 牌面" width="200" height="300" loading="lazy" decoding="async">
         </article>
       `).join("");
 
